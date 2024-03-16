@@ -15,7 +15,7 @@ import shutil
 
 bot = Client(
     "TerdaB",
-    bot_token="6912200154:AAFYNRNr7CvmTve_EFOz9mF8qYEMPpqdnsM",
+    bot_token="6783701234:AAEDyKCpLy_WojrHXFo_k1lW5ejJAShcH2o",
     api_id=1712043,
     api_hash="965c994b615e2644670ea106fd31daaf"
 )
@@ -321,6 +321,15 @@ async def teraBox(bot, message):
         LinkConvert = getUrl(msg)
         ShortUrl = shortener.tinyurl.short(LinkConvert)
         print(ShortUrl)
+        with youtube_dl.YoutubeDL() as ydl:
+            info = ydl.extract_info(ShortUrl, download=False)
+
+# Create caption with size and duration
+        caption = f"❤️ | Here's is your Download link: {ShortUrl}\n\n⚙️ | Video Downloaded Using @teraboxdownloader_xbot"
+        if info.get('duration'):
+            caption += f"\n🕒 Duration: {info['duration']} seconds"
+        if info.get('filesize'):
+            caption += f"\n📁 Size: {info['filesize'] / (1024 * 1024):.2f} MB"
         # Download the video using youtube-dl
         temp_dir = tempfile.mkdtemp()
         temp_file_path = os.path.join(temp_dir, '@teraboxdownloader_xbot video.mp4')
@@ -332,8 +341,15 @@ async def teraBox(bot, message):
             # Upload the video if it's below the maximum size
             await ProcessingMsg.delete()
             SendVideoMsg = await bot.send_message(message.chat.id, "📤")
-            caption = f"❤️ | Here's is your Download link: {ShortUrl}\n\n⚙️ | Video Downloaded Using @teraboxdownloader_xbot"
-            await bot.send_video(message.chat.id, VideoPath, caption=caption)
+            #caption = f"❤️ | Here's is your Download link: {ShortUrl}\n\n⚙️ |"
+            await bot.send_video(
+    message.chat.id,
+    video=VideoPath,
+    caption=caption,
+    thumb=info.get('thumbnail'),
+    disable_notification=True,  # Disable notification for silent send
+    supports_streaming=True  # Enable streaming for larger files
+)
             try:
                 os.remove(VideoPath)
             except:
@@ -398,3 +414,4 @@ async def teraBox(bot, message):
     
 print("Started..")
 bot.run()
+
