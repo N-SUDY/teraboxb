@@ -15,7 +15,7 @@ import shutil
 
 bot = Client(
     "TerdaB",
-    bot_token="7110683857:AAEN2skNKDv4-kFqxYoiJOlCJ4ecEawOCpk",
+    bot_token="6985529850:AAEArWrmBdE3K08147WsBLrrnkqwrmFh7eY",
     api_id=1712043,
     api_hash="965c994b615e2644670ea106fd31daaf"
 )
@@ -266,7 +266,7 @@ async def user_info(bot, message):
 
 @bot.on_message(filters.command('plans') & filters.private)
 async def plansList(bot, message):
-    msg_text = ("<b>INR PRICING \n\n10₹ - 7 days\n20₹ - 15 days\n30₹ - 24 days** \n40₹ - 30 days**\n\nCRYPTO PRICING \n\n$1 - 30 days\n</b>")
+    msg_text = ("<b>INR PRICING \n\n50₹ - 30 days**\n\nCRYPTO PRICING \n\n$1 - 30 days\n</b>")
 
     inline_keyboard = ikm(
         [[ikb("Buy Now ✅", url="https://t.me/mrxed_bot")]])
