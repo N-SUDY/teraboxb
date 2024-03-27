@@ -15,7 +15,7 @@ import shutil
 
 bot = Client(
     "TerdaB",
-    bot_token="6985529850:AAEArWrmBdE3K08147WsBLrrnkqwrmFh7eY",
+    bot_token="7017156292:AAFczosU8rfhd2To0Kq1LfKF8v7pWzJZ8Ac",
     api_id=1712043,
     api_hash="965c994b615e2644670ea106fd31daaf"
 )
