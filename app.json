@@ -1,0 +1,26 @@
+{
+    "name": "teraboxbot",
+    "description": "A Pyrogram and MongoDB based Telegram Bot for generating premium accounts. Make your own Telegram Account Generator Bot.",
+    "keywords": [
+        "telegram",
+        "short link",
+        "Acoount Gen Bot",
+        "Telegram Acoount Gen Bot"
+    ],
+    "website": "https://github.com/XSmitX/teraboxbot",
+    "repository": "https://github.com/XSmitX/teraboxbot",
+    "logo": "https://ibb.co/kMVxrCj",
+    "addons": [],
+    "buildpacks": [
+        {
+            "url": "heroku/python"
+        }
+    ],
+    "formation": {
+        "worker": {
+            "quantity": 1,
+            "size": "standard-1x"
+        }
+    },
+    "stack": "heroku-22"
+}
