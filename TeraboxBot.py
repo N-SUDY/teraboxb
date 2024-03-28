@@ -15,7 +15,7 @@ import shutil
 
 bot = Client(
     "TerdaB",
-    bot_token="7017156292:AAFczosU8rfhd2To0Kq1LfKF8v7pWzJZ8Ac",
+    bot_token="6783701234:AAEDyKCpLy_WojrHXFo_k1lW5ejJAShcH2o",
     api_id=1712043,
     api_hash="965c994b615e2644670ea106fd31daaf"
 )
@@ -27,11 +27,7 @@ shortener = pyshorteners.Shortener()
 temp_dir = tempfile.mkdtemp()
 
 # Define the maximum file size in bytes (200MB)
-MAX_FILE_SIZE = 1024 * 1024 * 1024
-
 # Specify a temporary file path within the temporary directory
-temp_file_path = os.path.join(temp_dir, '@teraboxdownloader_xbot video.mp4')
-
 # Initialize MongoDB client and database
 ConnectionString = "mongodb+srv://smit:smit@cluster0.pjccvjk.mongodb.net/?retryWrites=true&w=majority"
 client = pymongo.MongoClient(ConnectionString)
@@ -321,82 +317,11 @@ async def teraBox(bot, message):
         LinkConvert = getUrl(msg)
         ShortUrl = shortener.tinyurl.short(LinkConvert)
         print(ShortUrl)
-        with youtube_dl.YoutubeDL() as ydl:
-            info = ydl.extract_info(ShortUrl, download=False)
-
-# Create caption with size and duration
-        caption = f"❤️ | Here's is your Download link: {ShortUrl}\n\n⚙️ | Video Downloaded Using @teraboxdownloader_xbot"
-        if info.get('duration'):
-            caption += f"\n🕒 Duration: {info['duration']} seconds"
-        if info.get('filesize'):
-            caption += f"\n📁 Size: {info['filesize'] / (1024 * 1024):.2f} MB"
+        await bot.send_message(message.chat.id, f"Here's your Download Link : {ShortUrl}")
         # Download the video using youtube-dl
-        temp_dir = tempfile.mkdtemp()
-        temp_file_path = os.path.join(temp_dir, '@teraboxdownloader_xbot video.mp4')
-        VideoPath = await download_video(ShortUrl, temp_file_path)
-    
-        # Check if the file size is below the maximum threshold
-        file_size = os.path.getsize(temp_file_path)
-        if file_size <= MAX_FILE_SIZE:
-            # Upload the video if it's below the maximum size
-            await ProcessingMsg.delete()
-            SendVideoMsg = await bot.send_message(message.chat.id, "📤")
-            #caption = f"❤️ | Here's is your Download link: {ShortUrl}\n\n⚙️ |"
-            await bot.send_video(
-    message.chat.id,
-    video=VideoPath,
-    caption=caption,
-    thumb=info.get('thumbnail'),
-    disable_notification=True,  # Disable notification for silent send
-    supports_streaming=True  # Enable streaming for larger files
-)
-            try:
-                os.remove(VideoPath)
-            except:
-                pass
-            try:
-                os.remove(temp_dir)
-            except:
-                pass
-            try:
-                os.remove(temp_file_path)
-            except:
-                pass
-            await SendVideoMsg.delete()
 
-        else:
-            # Send the direct download link if the video exceeds the size limit
-            try:
-                os.remove(VideoPath)
-            except:
-                pass
-            try:
-                os.remove(temp_dir)
-            except:
-                pass
-            try:
-                os.remove(temp_file_path)
-            except:
-                pass
-            await bot.send_message(message.chat.id, f"**⚠️ This bot cannot upload videos more than 200mb in size on telegram. So we request you to download your video from the direct link given below 👇\n{ShortUrl}\n\nThanks For Patience**")
 
-    except Exception as e:
-        try:
-            os.remove(VideoPath)
-        except:
-            pass
-        try:
-            os.remove(temp_dir)
-        except:
-            pass
-        try:
-            os.remove(temp_file_path)
-        except:
-            pass
-        try:
-            await SendVideoMsg.delete()
-        except:
-             pass       
+    except Exception as e:       
         await ProcessingMsg.delete()
         ErrorMsg = await bot.send_message(message.chat.id, f"<code>Error: {e}</code>")
         await asyncio.sleep(3)
@@ -404,12 +329,7 @@ async def teraBox(bot, message):
 
     finally:
         await ProcessingMsg.delete()
-        try:
-            await SendVideoMsg.delete()
-        except:
-             pass 
-        shutil.rmtree(temp_dir)
-        update_limit(user_id)
+    
 
     
 print("Started..")
