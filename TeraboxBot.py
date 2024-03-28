@@ -274,16 +274,6 @@ async def support(bot, message):
     await bot.send_message(message.chat.id,ContactUs)
 
 # Function to download video using youtube-dl
-async def download_video(url, temp_file_path):
-    ydl_opts = {
-        'format': 'best',
-        'outtmpl': temp_file_path
-    }
-    with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-        info_dict = ydl.extract_info(url, download=True)
-        filename = ydl.prepare_filename(info_dict)
-    return filename
-
 @bot.on_message(filters.text & filters.private & check_joined())
 async def teraBox(bot, message):
     user_id = message.from_user.id
@@ -317,7 +307,7 @@ async def teraBox(bot, message):
         LinkConvert = getUrl(msg)
         ShortUrl = shortener.tinyurl.short(LinkConvert)
         print(ShortUrl)
-        await bot.send_message(message.chat.id, f"Here's your Download Link : {ShortUrl}")
+        await bot.send_message(message.chat.id, f"<b>📥 | Here's your shortened link:\n{ShortUrl}\n\n🚫 | If you are not getting any video below.\nThen try downloading video manually using the link provided above. \n\n Join https://t.me/terabox_updates_x for bot updates.</b>")
         # Download the video using youtube-dl
 
 
