@@ -24,7 +24,6 @@ admin_ids = [6121699672, 1111214141]  # Add all admin IDs here
 shortener = pyshorteners.Shortener()
 
 
-
 # Define the maximum file size in bytes (200MB)
 # Specify a temporary file path within the temporary directory
 # Initialize MongoDB client and database
@@ -32,21 +31,10 @@ ConnectionString = "mongodb+srv://smit:smit@cluster0.pjccvjk.mongodb.net/?retryW
 client = pymongo.MongoClient(ConnectionString)
 db = client["terabox"]
 user_links_collection = db["user_links"]
-plans_collection = db["plans"]
 
 # Initialize plans
-try:
-    plans_collection.insert_many([
-        {"_id": 1, "name": "7 days", "price": 10},
-        {"_id": 2, "name": "15 days", "price": 10},
-        {"_id": 3, "name": "24 days", "price": 30},
-        {"_id": 4, "name": "30 days", "price": 40}
-    ])
 
-except:
-    pass
-
-channel_username = "@Terabox_updates_x"
+channel_username = "@TeleBotsUpdate"
 
 def check_joined():
     async def func(flt, bot, message):
@@ -58,81 +46,14 @@ def check_joined():
             if member_info.status in (ChatMemberStatus.OWNER, ChatMemberStatus.ADMINISTRATOR, ChatMemberStatus.MEMBER):
                 return True
             else:
-                await bot.send_message(chat_id, join_msg , reply_markup=ikm([[ikb("✅ Join Channel", url="https://t.me/Terabox_updates_x")]]))
+                await bot.send_message(chat_id, join_msg , reply_markup=ikm([[ikb("✅ Join Channel", url="https://t.me/TeleBotsUpdate")]]))
                 return False
         except Exception as e:
-            await bot.send_message(chat_id, join_msg , reply_markup=ikm([[ikb("✅ Join Channel", url="https://t.me/Terabox_updates_x")]]))
+            await bot.send_message(chat_id, join_msg , reply_markup=ikm([[ikb("✅ Join Channel", url="https://t.me/TeleBotsUpdate")]]))
             return False
 
     return filters.create(func)
     
-def check_limit(user_id):
-    user = user_links_collection.find_one({"user_id": user_id})
-    if user:
-        links_count = user.get("links_count", 0)
-        last_conversion = user.get("last_conversion")
-        if links_count >= 3 and datetime.now() - last_conversion < timedelta(days=1):
-            return False
-    return True
-
-def update_limit(user_id):
-    user = user_links_collection.find_one({"user_id": user_id})
-    if user:
-        links_count = user.get("links_count", 0) + 1
-        user_links_collection.update_one({"user_id": user_id}, {
-                                         "$set": {"links_count": links_count, "last_conversion": datetime.now()}})
-    else:
-        user_links_collection.insert_one(
-            {"user_id": user_id, "links_count": 1, "last_conversion": datetime.now()})
-
-async def subscribe_premium(bot, user_id, plan_id):
-    # Retrieve plan details
-    plan = plans_collection.find_one({"_id": plan_id})
-    if not plan:
-        return False
-    user_links_collection.update_one({"user_id": user_id}, {"$set": {
-                                     "plan_id": plan_id, "plan_name": plan["name"], "plan_price": plan["price"]}})
-    try:
-        await bot.send_message(user_id, f"**Congratulations! You have been subscribed to the {plan['name']} Validity.\nLinks Limit: Unlimited.**")
-    except Exception as e:
-        print(f"Failed to notify user {user_id}: {e}")
-
-    return True
-
-@bot.on_message(filters.command('adduser') & filters.private)
-async def add_user_to_premium(bot, message):
-    # Check if user is admin
-    if message.from_user.id not in admin_ids:
-        await bot.send_message(message.chat.id, "Only admin can add users to premium plans.")
-        return
-
-    # Parse command arguments
-    try:
-        _, user_identifier, plan_id_str = message.text.split(maxsplit=2)
-        plan_id = int(plan_id_str)
-    except ValueError:
-        await bot.send_message(message.chat.id, "Invalid command format. Please use: /adduser @username_or_userID plan_id")
-        return
-
-    # Check if the plan exists
-    plan = plans_collection.find_one({"_id": plan_id})
-    if not plan:
-        await bot.send_message(message.chat.id, "Invalid plan ID.")
-        return
-
-    # Get user ID from username or use user identifier directly
-    try:
-        user = await bot.get_users(user_identifier)
-        user_id = user.id
-    except ValueError:
-        user_id = int(user_identifier)
-
-    # Subscribe user to premium plan and notify the user
-    success = await subscribe_premium(bot, user_id, plan_id)
-    if success:
-        await bot.send_message(message.chat.id, f"User {user_identifier} has been subscribed to the {plan['name']} premium plan.")
-    else:
-        await bot.send_message(message.chat.id, "**Failed to subscribe user to the premium plan.**")
 
 @bot.on_message(filters.command('stats') & filters.private)
 async def get_users_info(bot, message):
@@ -177,12 +98,12 @@ async def get_users_info(bot, message):
 
 @bot.on_message(filters.command('start') & filters.private)
 async def start(bot, message):
-    welcomemsg = (f"**Hello {message.from_user.first_name} 👋,\nSend me terabox links and i will download video for you.\n\nMade with ❤️ by @telebotsupdate**\nMade By : @mrxed_bot")
+    welcomemsg = (f"**Hello {message.from_user.first_name} 👋,\nSend me terabox links and i will download video for you.")
     inline_keyboard = ikm(
     [
         [
             ikb("🪲 Report Bugs", url="https://t.me/telebotsupdategroup"),
-            ikb("☎️ Support Channel", url="https://t.me/Terabox_updates_x")
+            ikb("☎️ Support Channel", url="https://t.me/TeleBotsUpdate")
         ]
     ]
 )
@@ -259,34 +180,13 @@ async def user_info(bot, message):
     await message.reply_text(response_msg)
 
 
-@bot.on_message(filters.command('plans') & filters.private)
-async def plansList(bot, message):
-    msg_text = ("<b>INR PRICING \n\n50₹ - 30 days**\n\nCRYPTO PRICING \n\n$1 - 30 days\n</b>")
-
-    inline_keyboard = ikm(
-        [[ikb("Buy Now ✅", url="https://t.me/mrxed_bot")]])
-    await message.reply_text(msg_text, reply_markup=inline_keyboard)
-
-@bot.on_message(filters.command('support') & filters.private)
-async def support(bot, message):
-    ContactUs = "**Contact US** : @mrxed_bot & @mrwhite7206_bot"
-    await bot.send_message(message.chat.id,ContactUs)
 
 # Function to download video using youtube-dl
 @bot.on_message(filters.text & filters.private & check_joined())
 async def teraBox(bot, message):
     user_id = message.from_user.id
-    user = user_links_collection.find_one({"user_id": user_id})
-    if not user:
-        user_links_collection.insert_one(
-            {"user_id": user_id, "links_count": 0, "last_conversion": datetime.now(), "plan_id": 0})
-        user = user_links_collection.find_one({"user_id": user_id})
 
-    plan_id = user.get("plan_id", 0)
-    if plan_id == 0:
-        if not check_limit(user_id):
-            await bot.send_message(message.chat.id, "**You have reached your daily conversion limit. Limit Will resert tomorrow or You can Subscribe to a premium our plan. Click on /plans to see plans.**")
-            return
+   
 
     msg = message.text
     print(msg)
@@ -323,4 +223,3 @@ async def teraBox(bot, message):
     
 print("Started..")
 bot.run()
-
