@@ -23,8 +23,7 @@ bot = Client(
 admin_ids = [6121699672, 1111214141]  # Add all admin IDs here
 shortener = pyshorteners.Shortener()
 
-# Create a temporary directory
-temp_dir = tempfile.mkdtemp()
+
 
 # Define the maximum file size in bytes (200MB)
 # Specify a temporary file path within the temporary directory
@@ -47,7 +46,7 @@ try:
 except:
     pass
 
-channel_username = "@TeleBotsUpdate"
+channel_username = "@Terabox_updates_x"
 
 def check_joined():
     async def func(flt, bot, message):
