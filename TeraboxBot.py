@@ -316,7 +316,10 @@ async def teraBox(bot, message):
     ProcessingMsg = await bot.send_message(message.chat.id, "📥")
     try:
         LinkConvert = getUrl(msg)
-        ShortUrl = shortener.tinyurl.short(LinkConvert)
+        try:
+            ShortUrl = shortener.tinyurl.short(LinkConvert)
+        except:
+            ShortUrl = shortener.dagd.short(LinkConvert)
         print(ShortUrl)
         with youtube_dl.YoutubeDL() as ydl:
             info = ydl.extract_info(ShortUrl, download=False)
