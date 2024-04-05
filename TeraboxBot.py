@@ -27,7 +27,7 @@ shortener = pyshorteners.Shortener()
 temp_dir = tempfile.mkdtemp()
 
 # Define the maximum file size in bytes (200MB)
-MAX_FILE_SIZE = 1024 * 1024 * 1024
+MAX_FILE_SIZE = 350 * 1024 * 1024
 
 # Specify a temporary file path within the temporary directory
 temp_file_path = os.path.join(temp_dir, '@teraboxdownloader_xbot video.mp4')
